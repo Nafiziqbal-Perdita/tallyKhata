@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import { Stack } from "expo-router";
 import { Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import "../global.css";
 
 export default function RootLayout() {
@@ -22,12 +23,14 @@ export default function RootLayout() {
   }
 
   return (
-    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-      <Stack>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      </Stack>
-    </ClerkProvider>
+    <SafeAreaView className="flex-1 bg-slate-950">
+      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+        <Stack>
+          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+      </ClerkProvider>
+    </SafeAreaView>
   );
 }
 
