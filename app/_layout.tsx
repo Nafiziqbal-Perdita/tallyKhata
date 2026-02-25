@@ -34,3 +34,14 @@ export default function RootLayout() {
     </SafeAreaView>
   );
 }
+
+
+
+/*
+
+set up - RootLayout with ClerkProvider and Stack navigator
+- check for publishable key and show error if missing
+- wrap Stack navigator with ClerkProvider and pass tokenCache
+
+
+*/
