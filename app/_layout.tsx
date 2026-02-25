@@ -3,7 +3,6 @@ import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import { Stack } from "expo-router";
 import { Text, View } from "react-native";
 import "../global.css";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function RootLayout() {
   const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
@@ -23,15 +22,12 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaView className="flex-1 ">
-
-      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-        <Stack>
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
-      </ClerkProvider>
-    </SafeAreaView>
+    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+      <Stack>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      </Stack>
+    </ClerkProvider>
   );
 }
 

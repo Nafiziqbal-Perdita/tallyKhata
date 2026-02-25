@@ -1,9 +1,7 @@
 import { useAuth } from "@clerk/clerk-expo";
-import type { Href } from "expo-router";
 import { Redirect } from "expo-router";
 import { Text, View } from "react-native";
-
-const TABS_ROUTE = "/(tabs)" as Href;
+import { TABS_ROUTE } from "./constants/routes";
 
 export default function Index() {
   const { isLoaded, isSignedIn } = useAuth();
