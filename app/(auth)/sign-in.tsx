@@ -2,13 +2,11 @@ import { useSignIn, useSSO } from "@clerk/clerk-expo";
 import type { EmailCodeFactor, SignInFirstFactor } from "@clerk/types";
 import { Ionicons } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
-import type { Href } from "expo-router";
 import { Link, useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import { KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
-
-const TABS_ROUTE = "/(tabs)" as Href;
+import { TABS_ROUTE } from "../constants/routes";
 
 WebBrowser.maybeCompleteAuthSession();
 

@@ -1,10 +1,8 @@
 import { useSignUp } from "@clerk/clerk-expo";
-import type { Href } from "expo-router";
 import { Link, useRouter } from "expo-router";
 import React from "react";
 import { KeyboardAvoidingView, Platform, Pressable, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
-
-const TABS_ROUTE = "/(tabs)" as Href;
+import { TABS_ROUTE } from "../constants/routes";
 
 export default function SignUpPage() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -118,7 +116,7 @@ export default function SignUpPage() {
           <View className="items-center">
             <View className="h-16 w-16 rounded-[24px] bg-black" />
             <Text className="mt-6 text-center text-4xl font-extrabold tracking-tight text-black">
-              Log in or sign up
+              Create an account
             </Text>
           </View>
 
