@@ -3,7 +3,7 @@ import { Redirect } from "expo-router";
 
 import { AuthLoadingScreen } from "./_layout";
 
-export default function AppEntry() {
+export default function SSOCallbackScreen() {
   const { isLoaded, isSignedIn } = useAuth();
 
   if (!isLoaded) {
