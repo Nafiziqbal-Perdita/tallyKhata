@@ -1,4 +1,5 @@
 
+import { palette } from "@/theme/palette";
 import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { ActivityIndicator, Alert, Linking, Pressable, Text, View } from "react-native";
@@ -33,8 +34,8 @@ const AuthScreen = () => {
             {/* gradient background */}
             <View className="absolute inset-0">
                 <LinearGradient
-                    colors={["#0F0E17", "#1A1A2E", "#2D1B69", "#1A1A2E", "#0F0E17"]}
-                    locations={[0, 0.25, 0.5, 0.75, 1]}
+                    colors={[palette.background, palette.surface, palette.background]}
+                    locations={[0, 0.5, 1]}
                     style={{ width: "100%", height: "100%" }}
                     start={{ x: 0.5, y: 0 }}
                     end={{ x: 0.5, y: 1 }}
@@ -46,20 +47,20 @@ const AuthScreen = () => {
                 <View>
                     <View className="items-center pt-10 pb-2">
                         <View className="w-16 h-16 rounded-[20px] bg-primary/15 items-center justify-center border border-primary/20">
-                            <Ionicons name="school" size={30} color="#A29BFE" />
+                            <Ionicons name="school" size={30} color={palette.primary} />
                         </View>
 
-                        <Text className="text-3xl font-extrabold text-foreground tracking-tight mt-4 font-mono text-white">
+                        <Text className="text-3xl font-extrabold text-foreground tracking-tight mt-4 font-mono">
                             Tally-Khata
                         </Text>
 
-                        <Text className="text-foreground-muted text-[15px] mt-1.5 tracking-wide text-white/50">
+                        <Text className="text-foreground-muted text-[15px] mt-1.5 tracking-wide">
                         Use together, grow together
                         </Text>
                     </View>
 
                     <View className="items-center px-6 mt-4">
-                        <Ionicons name="book" size={100} color="#A29BFE" />
+                        <Ionicons name="book" size={100} color={palette.primaryLight} />
                     </View>
 
                     {/* feature chips (Tally-Khata) */}
@@ -101,10 +102,10 @@ const AuthScreen = () => {
                                 accessibilityRole="button"
                                 accessibilityLabel={chip.label}
                                 onPress={() => {}}
-                                className={`flex-row items-center gap-2 px-3.5 py-2 rounded-full border ${chip.bg}`}
+                                className="flex-row items-center gap-2 px-3.5 py-2 rounded-full border border-border bg-surface/70"
                             >
-                                <Ionicons name={chip.icon} size={16} color={chip.color} />
-                                <Text className="text-foreground-muted text-xs font-semibold tracking-wide text-white/50 ">
+                                <Ionicons name={chip.icon} size={16} color={palette.primary} />
+                                <Text className="text-foreground-muted text-xs font-semibold tracking-wide">
                                     {chip.label}
                                 </Text>
                             </Pressable>
@@ -124,7 +125,7 @@ const AuthScreen = () => {
                     <View className="flex-row justify-center items-center gap-4 mb-5">
                         {/* GOOGLE btn */}
                         <Pressable
-                            className="size-20 rounded-2xl bg-white/10 items-center justify-center active:scale-95 shadow-lg "
+                            className="size-20 rounded-2xl bg-surface/60 items-center justify-center active:scale-95 shadow-lg border border-border"
                             style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
                             disabled={isLoading}
                             accessibilityRole="button"
@@ -132,15 +133,15 @@ const AuthScreen = () => {
                             onPress={() => !isLoading && handleSocialAuth("oauth_google")}
                         >
                             {loadingStrategy === "oauth_google" ? (
-                                <ActivityIndicator size={"small"} color={"#6C5CE7"} />
+                                <ActivityIndicator size={"small"} color={palette.primary} />
                             ) : (
-                                <AntDesign name="google" size={28} color="#EA4335" />
+                                <AntDesign name="google" size={28} color={palette.primary} />
                             )}
                         </Pressable>
 
                         {/* APPLE btn */}
                         <Pressable
-                            className="size-20 rounded-2xl items-center justify-center active:scale-95 bg-white/10"
+                            className="size-20 rounded-2xl items-center justify-center active:scale-95 bg-surface/60 border border-border"
                             style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
                             disabled={isLoading}
                             accessibilityRole="button"
@@ -148,15 +149,15 @@ const AuthScreen = () => {
                             onPress={() => !isLoading && handleSocialAuth("oauth_apple")}
                         >
                             {loadingStrategy === "oauth_apple" ? (
-                                <ActivityIndicator size="small" color="#6C5CE7" />
+                                <ActivityIndicator size="small" color={palette.primary} />
                             ) : (
-                                <Ionicons name="logo-apple" size={30} color="#FFFFFE" />
+                                <Ionicons name="logo-apple" size={30} color={palette.foreground} />
                             )}
                         </Pressable>
 
                         {/* FACEBOOK btn */}
                         <Pressable
-                            className="size-20 rounded-2xl bg-white/10  items-center justify-center active:scale-95"
+                            className="size-20 rounded-2xl bg-surface/60 items-center justify-center active:scale-95 border border-border"
                             style={({ pressed }) => ({ opacity: pressed ? 0.85 : 1 })}
                             disabled={isLoading}
                             accessibilityRole="button"
@@ -164,9 +165,9 @@ const AuthScreen = () => {
                             onPress={() => !isLoading && handleSocialAuth("oauth_facebook")}
                         >
                             {loadingStrategy === "oauth_facebook" ? (
-                                <ActivityIndicator size="small" color="#6C5CE7" />
+                                <ActivityIndicator size="small" color={palette.primary} />
                             ) : (
-                                <Ionicons name="logo-facebook" size={28} color="#FFFFFE" />
+                                <Ionicons name="logo-facebook" size={28} color={palette.foreground} />
                             )}
                         </Pressable>
                     </View>

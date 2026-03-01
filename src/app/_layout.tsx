@@ -3,6 +3,8 @@ import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import { Stack } from "expo-router";
 import { ActivityIndicator, Text, View } from "react-native";
 
+import { palette } from "@/theme/palette";
+
 import "../../global.css";
 
 export default function RootLayout() {
@@ -37,7 +39,7 @@ export default function RootLayout() {
 export function AuthLoadingScreen() {
   return (
     <View className="flex-1 items-center justify-center bg-background">
-      <ActivityIndicator size="large" color="#6C5CE7" />
+      <ActivityIndicator size="large" color={palette.primary} />
       <Text className="text-foreground-muted mt-3 text-sm">Loading session...</Text>
     </View>
   );

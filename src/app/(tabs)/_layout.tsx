@@ -2,6 +2,7 @@ import { useAuth } from "@clerk/clerk-expo";
 import { Redirect } from "expo-router";
 import { NativeTabs } from "expo-router/unstable-native-tabs";
 
+import { palette } from "@/theme/palette";
 import { AuthLoadingScreen } from "../_layout";
 
 export default function TabLayout() {
@@ -16,7 +17,12 @@ export default function TabLayout() {
   }
 
   return (
-    <NativeTabs backgroundColor={"white"} labelVisibilityMode="auto" iconColor={"red"} indicatorColor={"#ecc9c9"}  >
+    <NativeTabs
+      backgroundColor={palette.background}
+      labelVisibilityMode="auto"
+      iconColor={palette.foreground}
+      indicatorColor={palette.primary}
+    >
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Label>Home</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon sf="house.fill" md="home" />
