@@ -10,7 +10,13 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npm install
    ```
 
-2. Start the app
+2. Configure environment variables
+
+   - Copy `.env.example` to `.env`
+   - Set `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY` in `.env`
+   - `.env` is ignored by `.gitignore` and should not be committed
+
+3. Start the app
 
    ```bash
    npx expo start
