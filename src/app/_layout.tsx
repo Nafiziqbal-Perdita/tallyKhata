@@ -29,6 +29,7 @@ export default function RootLayout() {
         <Stack.Screen name="index" />
         <Stack.Screen name="(auth)" />
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="stock" options={{ headerShown: false }} />
         <Stack.Screen name="sso-callback" />
         <Stack.Screen name="+not-found" />
       </Stack>
@@ -40,7 +41,9 @@ export function AuthLoadingScreen() {
   return (
     <View className="flex-1 items-center justify-center bg-background">
       <ActivityIndicator size="large" color={palette.primary} />
-      <Text className="text-foreground-muted mt-3 text-sm">Loading session...</Text>
+      <Text className="text-foreground-muted mt-3 text-sm">
+        Loading session...
+      </Text>
     </View>
   );
 }
