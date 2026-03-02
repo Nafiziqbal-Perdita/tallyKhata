@@ -2,6 +2,7 @@ import { ClerkProvider } from "@clerk/clerk-expo";
 import { tokenCache } from "@clerk/clerk-expo/token-cache";
 import { Stack } from "expo-router";
 import { ActivityIndicator, Text, View } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { palette } from "@/theme/palette";
 
@@ -24,16 +25,19 @@ export default function RootLayout() {
   }
 
   return (
-    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
-      <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(auth)" />
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="stock" options={{ headerShown: false }} />
-        <Stack.Screen name="sso-callback" />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ClerkProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+        <Stack initialRouteName="index" screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(auth)" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="stock" />
+          <Stack.Screen name="customer_supplier" />
+          <Stack.Screen name="sso-callback" />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+      </ClerkProvider>
+    </GestureHandlerRootView>
   );
 }
 

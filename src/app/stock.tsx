@@ -225,11 +225,11 @@ const StockScreen = () => {
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 24 }}
         ListHeaderComponent={
           <View className="pt-6">
-            <View className="gap-5">
-              <View className="h-20 flex-row items-center rounded-2xl border border-border bg-surface px-4">
+            <View className="gap-4">
+              <View className="h-16 flex-row items-center rounded-2xl border border-border bg-surface px-4">
                 <Ionicons
                   name="cube-outline"
-                  size={24}
+                  size={22}
                   color={palette.foreground}
                 />
                 <TextInput
@@ -243,11 +243,11 @@ const StockScreen = () => {
 
               <Pressable
                 onPress={() => setUnitPickerTarget("create")}
-                className="h-20 flex-row items-center rounded-2xl border border-border bg-surface px-4 active:opacity-90"
+                className="h-16 flex-row items-center rounded-2xl border border-border bg-surface px-4 active:opacity-90"
               >
                 <Ionicons
                   name="albums-outline"
-                  size={24}
+                  size={22}
                   color={palette.foreground}
                 />
                 <Text
@@ -260,15 +260,15 @@ const StockScreen = () => {
                 </Text>
                 <Ionicons
                   name="chevron-down"
-                  size={24}
+                  size={22}
                   color={palette.foreground}
                 />
               </Pressable>
 
-              <View className="h-20 flex-row items-center rounded-2xl border border-border bg-surface px-4">
+              <View className="h-16 flex-row items-center rounded-2xl border border-border bg-surface px-4">
                 <Ionicons
                   name="cash-outline"
-                  size={24}
+                  size={22}
                   color={palette.foreground}
                 />
                 <TextInput
@@ -281,10 +281,10 @@ const StockScreen = () => {
                 />
               </View>
 
-              <View className="h-20 flex-row items-center rounded-2xl border border-border bg-surface px-4">
+              <View className="h-16 flex-row items-center rounded-2xl border border-border bg-surface px-4">
                 <Ionicons
                   name="layers-outline"
-                  size={24}
+                  size={22}
                   color={palette.foreground}
                 />
                 <TextInput
@@ -301,7 +301,7 @@ const StockScreen = () => {
                 disabled={isSubmitDisabled}
                 onPress={handleSaveStock}
                 className={
-                  "h-14 items-center justify-center rounded-full " +
+                  "h-12 items-center justify-center rounded-full " +
                   (isSubmitDisabled ? "bg-primary/20" : "bg-primary")
                 }
               >
@@ -310,7 +310,7 @@ const StockScreen = () => {
                 ) : (
                   <Text
                     className={
-                      "text-lg font-semibold " +
+                      "text-base font-semibold " +
                       (isSubmitDisabled
                         ? "text-foreground-subtle"
                         : "text-background")
@@ -430,7 +430,7 @@ const StockScreen = () => {
         animationType="fade"
         onRequestClose={() => setUnitPickerTarget(null)}
       >
-        <View className="flex-1 justify-end bg-black/45">
+        <View className="flex-1 justify-end bg-black/18">
           <Pressable
             className="flex-1"
             onPress={() => setUnitPickerTarget(null)}
@@ -460,7 +460,7 @@ const StockScreen = () => {
                       setUnitPickerTarget(null);
                     }}
                     className={
-                      "h-12 flex-row items-center rounded-xl border px-4 " +
+                      "h-12 flex-row items-center rounded-2xl border px-4 " +
                       (isActive
                         ? "border-primary bg-primary/10"
                         : "border-border bg-background")
@@ -495,7 +495,7 @@ const StockScreen = () => {
         animationType="fade"
         onRequestClose={handleCloseEditModal}
       >
-        <View className="flex-1 justify-end bg-black/45">
+        <View className="flex-1 justify-end bg-black/18">
           <Pressable className="flex-1" onPress={handleCloseEditModal} />
 
           <View className="rounded-t-3xl border-t border-border bg-surface px-5 pb-6 pt-4">
@@ -505,10 +505,10 @@ const StockScreen = () => {
             </Text>
 
             <View className="gap-3">
-              <View className="h-14 flex-row items-center rounded-xl border border-border bg-background px-4">
+              <View className="h-12 flex-row items-center rounded-2xl border border-border bg-background px-4">
                 <Ionicons
                   name="cube-outline"
-                  size={20}
+                  size={22}
                   color={palette.foreground}
                 />
                 <TextInput
@@ -522,11 +522,11 @@ const StockScreen = () => {
 
               <Pressable
                 onPress={() => setUnitPickerTarget("edit")}
-                className="h-14 flex-row items-center rounded-xl border border-border bg-background px-4 active:opacity-90"
+                className="h-12 flex-row items-center rounded-2xl border border-border bg-background px-4 active:opacity-90"
               >
                 <Ionicons
                   name="albums-outline"
-                  size={20}
+                  size={22}
                   color={palette.foreground}
                 />
                 <Text
@@ -539,15 +539,15 @@ const StockScreen = () => {
                 </Text>
                 <Ionicons
                   name="chevron-down"
-                  size={20}
+                  size={22}
                   color={palette.foreground}
                 />
               </Pressable>
 
-              <View className="h-14 flex-row items-center rounded-xl border border-border bg-background px-4">
+              <View className="h-12 flex-row items-center rounded-2xl border border-border bg-background px-4">
                 <Ionicons
                   name="cash-outline"
-                  size={20}
+                  size={22}
                   color={palette.foreground}
                 />
                 <TextInput
@@ -560,10 +560,10 @@ const StockScreen = () => {
                 />
               </View>
 
-              <View className="h-14 flex-row items-center rounded-xl border border-border bg-background px-4">
+              <View className="h-12 flex-row items-center rounded-2xl border border-border bg-background px-4">
                 <Ionicons
                   name="layers-outline"
-                  size={20}
+                  size={22}
                   color={palette.foreground}
                 />
                 <TextInput
@@ -576,10 +576,10 @@ const StockScreen = () => {
                 />
               </View>
 
-              <View className="h-14 flex-row items-center rounded-xl border border-border bg-background px-4">
+              <View className="h-12 flex-row items-center rounded-2xl border border-border bg-background px-4">
                 <Ionicons
                   name="wallet-outline"
-                  size={20}
+                  size={22}
                   color={palette.foreground}
                 />
                 <TextInput
@@ -592,10 +592,10 @@ const StockScreen = () => {
                 />
               </View>
 
-              <View className="h-14 flex-row items-center rounded-xl border border-border bg-background px-4">
+              <View className="h-12 flex-row items-center rounded-2xl border border-border bg-background px-4">
                 <Ionicons
                   name="trending-up-outline"
-                  size={20}
+                  size={22}
                   color={palette.foreground}
                 />
                 <TextInput

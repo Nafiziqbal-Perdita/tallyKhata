@@ -18,7 +18,7 @@ export default function TabLayout() {
 
   return (
     <NativeTabs
-      backgroundColor={palette.background}
+      backgroundColor={palette.surface}
       labelVisibilityMode="auto"
       iconColor={palette.foreground}
       indicatorColor={palette.primary}
@@ -28,16 +28,16 @@ export default function TabLayout() {
         <NativeTabs.Trigger.Icon sf="house.fill" md="home" />
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="wallet">
-        <NativeTabs.Trigger.Icon sf="wallet.bifold.fill" md="wallet"   />
-        <NativeTabs.Trigger.Label  >Wallet</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="wallet.bifold.fill" md="wallet" />
+        <NativeTabs.Trigger.Label>Wallet</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="cashbook">
-        <NativeTabs.Trigger.Icon sf="circle.dashed" md="money_bag"   />
-        <NativeTabs.Trigger.Label  >Cash</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="circle.dashed" md="money_bag" />
+        <NativeTabs.Trigger.Label>Cash</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
       <NativeTabs.Trigger name="menu">
-        <NativeTabs.Trigger.Icon sf="circle.dashed" md="menu"   />
-        <NativeTabs.Trigger.Label  >Menu</NativeTabs.Trigger.Label>
+        <NativeTabs.Trigger.Icon sf="circle.dashed" md="menu" />
+        <NativeTabs.Trigger.Label>Menu</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
     </NativeTabs>
   );
