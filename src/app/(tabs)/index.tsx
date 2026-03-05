@@ -1,7 +1,7 @@
 import { palette } from "@/theme/palette";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -202,7 +202,7 @@ function EditCustomerModal({
       >
         <Pressable className="flex-1 bg-black/18" onPress={onClose} />
 
-        <View className="max-h-[90%] rounded-t-3xl border-t border-border bg-background px-5 pb-8 pt-4">
+        <View className="max-h-[90%] rounded-t-3xl border-t border-border bg-surface px-5 pb-8 pt-4">
           <View className="mb-3 h-1.5 w-12 self-center rounded-full bg-border" />
 
           <Text className="mb-4 text-center text-base font-semibold text-foreground">
@@ -239,7 +239,7 @@ function EditCustomerModal({
               value={name}
               onChangeText={setName}
               placeholder="নাম"
-              placeholderTextColor={palette.foreground}
+              placeholderTextColor={palette.foregroundMuted}
               className="text-foreground"
             />
           </View>
@@ -249,7 +249,7 @@ function EditCustomerModal({
               value={phone}
               onChangeText={(value) => setPhone(normalizeBdPhone(value))}
               placeholder="মোবাইল নাম্বার"
-              placeholderTextColor={palette.foreground}
+              placeholderTextColor={palette.foregroundMuted}
               keyboardType="phone-pad"
               className="text-foreground"
             />
@@ -270,7 +270,7 @@ function EditCustomerModal({
                   setTotalReceivable(value.replace(/[^0-9.]/g, ""))
                 }
                 placeholder="মোট পাবো"
-                placeholderTextColor={palette.foreground}
+                placeholderTextColor={palette.foregroundMuted}
                 keyboardType="numeric"
                 className="flex-1 text-foreground"
               />
@@ -289,7 +289,7 @@ function EditCustomerModal({
                   setTotalPayable(value.replace(/[^0-9.]/g, ""))
                 }
                 placeholder="মোট দেবো"
-                placeholderTextColor={palette.foreground}
+                placeholderTextColor={palette.foregroundMuted}
                 keyboardType="numeric"
                 className="flex-1 text-foreground"
               />
@@ -301,7 +301,7 @@ function EditCustomerModal({
               value={recordDate}
               onChangeText={setRecordDate}
               placeholder="তারিখ (YYYY-MM-DD)"
-              placeholderTextColor={palette.foreground}
+              placeholderTextColor={palette.foregroundMuted}
               className="text-foreground"
             />
           </View>
@@ -311,7 +311,7 @@ function EditCustomerModal({
               value={description}
               onChangeText={setDescription}
               placeholder="বিবরণ"
-              placeholderTextColor={palette.foreground}
+              placeholderTextColor={palette.foregroundMuted}
               multiline
               className="min-h-[72px] text-foreground"
               textAlignVertical="top"
@@ -397,6 +397,14 @@ export default function HomeTab() {
       void loadCustomers();
     }
   }, [isLoaded, user, setBusiness, loadCustomers]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isLoaded && user) {
+        void loadCustomers();
+      }
+    }, [isLoaded, user, loadCustomers]),
+  );
 
   const selectedCustomer = useMemo(() => {
     if (!selectedCustomerId) {
@@ -582,9 +590,25 @@ export default function HomeTab() {
           <View>
             <View className="flex-row items-center justify-between pt-2">
               <Pressable className="flex-row items-center gap-2">
-                <View className="h-8 w-8 items-center justify-center rounded-full border border-primary/20 bg-primary">
-                  <Text className="text-background font-bold">T</Text>
-                </View>
+                {user?.imageUrl ? (
+                  <Image
+                    source={{ uri: user?.imageUrl! }}
+                    contentFit="cover"
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: 16,
+                      borderWidth: 1,
+                      borderColor: palette.primary + "33",
+                    }}
+                  />
+                ) : (
+                  <View className="h-8 w-8 items-center justify-center rounded-full border border-primary/20 bg-primary">
+                    <Text className="text-background font-bold">
+                      {user?.firstName?.[0]?.toUpperCase() ?? "U"}
+                    </Text>
+                  </View>
+                )}
                 <View>
                   <Text className="text-base font-semibold text-foreground">
                     Tally
@@ -596,13 +620,6 @@ export default function HomeTab() {
               </Pressable>
 
               <View className="flex-row items-center gap-2">
-                <Pressable className="h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface active:opacity-90">
-                  <Text className="text-foreground-muted">✉</Text>
-                </Pressable>
-                <Pressable className="h-10 w-10 items-center justify-center rounded-xl border border-border bg-surface active:opacity-90">
-                  <Text className="text-foreground-muted">?</Text>
-                </Pressable>
-
                 <Pressable
                   onPress={handleSignOut}
                   disabled={isSigningOut}
@@ -695,7 +712,7 @@ export default function HomeTab() {
                   value={query}
                   onChangeText={setQuery}
                   placeholder="খোঁজ"
-                  placeholderTextColor={palette.foreground}
+                  placeholderTextColor={palette.foregroundMuted}
                   className="flex-1 text-foreground"
                 />
               </View>

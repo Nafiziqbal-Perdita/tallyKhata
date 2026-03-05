@@ -230,13 +230,13 @@ const StockScreen = () => {
                 <Ionicons
                   name="cube-outline"
                   size={22}
-                  color={palette.foreground}
+                  color={palette.foregroundMuted}
                 />
                 <TextInput
                   value={productName}
                   onChangeText={setProductName}
                   placeholder="প্রোডাক্ট এর নাম"
-                  placeholderTextColor={palette.foreground}
+                  placeholderTextColor={palette.foregroundMuted}
                   className="ml-3 flex-1 text-base text-foreground"
                 />
               </View>
@@ -248,7 +248,7 @@ const StockScreen = () => {
                 <Ionicons
                   name="albums-outline"
                   size={22}
-                  color={palette.foreground}
+                  color={palette.foregroundMuted}
                 />
                 <Text
                   className={
@@ -261,7 +261,7 @@ const StockScreen = () => {
                 <Ionicons
                   name="chevron-down"
                   size={22}
-                  color={palette.foreground}
+                  color={palette.foregroundMuted}
                 />
               </Pressable>
 
@@ -269,13 +269,13 @@ const StockScreen = () => {
                 <Ionicons
                   name="cash-outline"
                   size={22}
-                  color={palette.foreground}
+                  color={palette.foregroundMuted}
                 />
                 <TextInput
                   value={costPerUnit}
                   onChangeText={setCostPerUnit}
                   placeholder="প্রতি ইউনিট খরচ"
-                  placeholderTextColor={palette.foreground}
+                  placeholderTextColor={palette.foregroundMuted}
                   keyboardType="decimal-pad"
                   className="ml-3 flex-1 text-base text-foreground"
                 />
@@ -285,13 +285,13 @@ const StockScreen = () => {
                 <Ionicons
                   name="layers-outline"
                   size={22}
-                  color={palette.foreground}
+                  color={palette.foregroundMuted}
                 />
                 <TextInput
                   value={openingStock}
                   onChangeText={setOpeningStock}
                   placeholder="ওপেনিং স্টক (ঐচ্ছিক)"
-                  placeholderTextColor={palette.foreground}
+                  placeholderTextColor={palette.foregroundMuted}
                   keyboardType="decimal-pad"
                   className="ml-3 flex-1 text-base text-foreground"
                 />
@@ -515,7 +515,7 @@ const StockScreen = () => {
                   value={editName}
                   onChangeText={setEditName}
                   placeholder="প্রোডাক্ট এর নাম"
-                  placeholderTextColor={palette.foreground}
+                  placeholderTextColor={palette.foregroundMuted}
                   className="ml-3 flex-1 text-foreground"
                 />
               </View>
@@ -554,7 +554,7 @@ const StockScreen = () => {
                   value={editCostPerUnit}
                   onChangeText={setEditCostPerUnit}
                   placeholder="প্রতি ইউনিট খরচ"
-                  placeholderTextColor={palette.foreground}
+                  placeholderTextColor={palette.foregroundMuted}
                   keyboardType="decimal-pad"
                   className="ml-3 flex-1 text-foreground"
                 />
@@ -570,7 +570,7 @@ const StockScreen = () => {
                   value={editOpeningStock}
                   onChangeText={setEditOpeningStock}
                   placeholder="ওপেনিং স্টক"
-                  placeholderTextColor={palette.foreground}
+                  placeholderTextColor={palette.foregroundMuted}
                   keyboardType="decimal-pad"
                   className="ml-3 flex-1 text-foreground"
                 />
@@ -586,7 +586,7 @@ const StockScreen = () => {
                   value={editTotalCost}
                   onChangeText={setEditTotalCost}
                   placeholder="মোট খরচ"
-                  placeholderTextColor={palette.foreground}
+                  placeholderTextColor={palette.foregroundMuted}
                   keyboardType="decimal-pad"
                   className="ml-3 flex-1 text-foreground"
                 />
@@ -602,7 +602,7 @@ const StockScreen = () => {
                   value={editTotalSold}
                   onChangeText={setEditTotalSold}
                   placeholder="মোট বিক্রি"
-                  placeholderTextColor={palette.foreground}
+                  placeholderTextColor={palette.foregroundMuted}
                   keyboardType="decimal-pad"
                   className="ml-3 flex-1 text-foreground"
                 />

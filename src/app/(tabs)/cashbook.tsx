@@ -7,9 +7,14 @@ import { SafeAreaView } from "react-native-safe-area-context";
 const Cashbook = () => {
   return (
     <SafeAreaView className="flex-1 bg-background px-5 pt-5">
-      <View className="rounded-2xl border border-border bg-surface px-5 py-5">
+      <Text className="text-foreground text-xl font-semibold">Cashbook</Text>
+      <Text className="mt-1 text-sm text-foreground-muted">
+        Daily cash in and cash out snapshot
+      </Text>
+
+      <View className="mt-4 rounded-2xl border border-border bg-surface px-5 py-5">
         <View className="flex-row items-center">
-          <View className="h-10 w-10 items-center justify-center rounded-xl bg-primary/15">
+          <View className="h-10 w-10 items-center justify-center rounded-xl bg-primary-light">
             <Ionicons name="book-outline" size={22} color={palette.primary} />
           </View>
           <View className="ml-3">

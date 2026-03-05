@@ -101,6 +101,25 @@ export type CustomerSupplier = {
   created_at: string;
 };
 
+type SupabaseLikeError = {
+  code?: string;
+  message?: string;
+};
+
+const mapCustomerSupplierDbError = (error: unknown): Error => {
+  const dbError = error as SupabaseLikeError;
+
+  if (dbError?.code === "23505") {
+    return new Error("এই নম্বর দিয়ে কাস্টমার/সাপ্লায়ার আগে থেকেই আছে");
+  }
+
+  if (dbError?.message) {
+    return new Error(dbError.message);
+  }
+
+  return new Error("কাস্টমার/সাপ্লায়ার সেভ করা যায়নি");
+};
+
 const useSupabase = () => {
   const [loading, setLoading] = useState<boolean | null>(null);
   const { isLoaded, isSignedIn } = useAuth();
@@ -470,7 +489,7 @@ const useSupabase = () => {
           .single();
 
         if (inserted.error) {
-          throw inserted.error;
+          throw mapCustomerSupplierDbError(inserted.error);
         }
 
         return inserted.data as CustomerSupplier;
@@ -478,7 +497,7 @@ const useSupabase = () => {
         const message = error instanceof Error ? error.message : String(error);
         console.log("Error creating customer/supplier:", message);
         console.log("Error creating customer/supplier (full):", error);
-        throw error;
+        throw mapCustomerSupplierDbError(error);
       } finally {
         setLoading(false);
       }
@@ -619,7 +638,7 @@ const useSupabase = () => {
           .single();
 
         if (updated.error) {
-          throw updated.error;
+          throw mapCustomerSupplierDbError(updated.error);
         }
 
         return updated.data as CustomerSupplier;
@@ -627,7 +646,7 @@ const useSupabase = () => {
         const message = error instanceof Error ? error.message : String(error);
         console.log("Error updating customer/supplier:", message);
         console.log("Error updating customer/supplier (full):", error);
-        throw error;
+        throw mapCustomerSupplierDbError(error);
       } finally {
         setLoading(false);
       }

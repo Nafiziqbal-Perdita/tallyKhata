@@ -5,7 +5,7 @@ import * as Contacts from "expo-contacts";
 import { Image } from "expo-image";
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -17,7 +17,10 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import useSupabase from "./hooks/useSupabase";
 
 const normalizeBdPhone = (rawValue: string) => {
@@ -44,6 +47,11 @@ const normalizeBdPhone = (rawValue: string) => {
 
 const CustomerSupplierScreen = () => {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
+  const scrollViewRef = useRef<ScrollView>(null);
+  const descriptionFocusTimeoutRef = useRef<ReturnType<
+    typeof setTimeout
+  > | null>(null);
 
   const generateAvatarSeed = () => Math.random().toString(36).slice(2, 10);
 
@@ -60,6 +68,7 @@ const CustomerSupplierScreen = () => {
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
   const [avatarSeed, setAvatarSeed] = useState<string>(generateAvatarSeed);
   const [isSaving, setIsSaving] = useState(false);
+  const [descriptionSectionY, setDescriptionSectionY] = useState(0);
 
   const fallbackAvatarUri = useMemo(() => {
     return `https://api.dicebear.com/7.x/lorelei/png?seed=${avatarSeed}&backgroundColor=d9d7dc,0984a5,e3954d`;
@@ -69,7 +78,7 @@ const CustomerSupplierScreen = () => {
 
   const handlePhoneChange = (value: string) => {
     const normalized = normalizeBdPhone(value);
-    setPhone(normalized);
+    setPhone(normalized.slice(0, 11));
   };
 
   const handleAmountChange = (
@@ -148,6 +157,9 @@ const CustomerSupplierScreen = () => {
     return name.trim().length === 0 || !isValidPhone || isSaving;
   }, [name, phone, isSaving]);
 
+  const showInvalidPhoneHint =
+    phone.trim().length > 0 && !/^01\d{9}$/.test(normalizeBdPhone(phone));
+
   const handleSubmit = async () => {
     if (isSubmitDisabled) {
       return;
@@ -202,6 +214,27 @@ const CustomerSupplierScreen = () => {
     }
   };
 
+  const handleDescriptionFocus = () => {
+    if (descriptionFocusTimeoutRef.current) {
+      clearTimeout(descriptionFocusTimeoutRef.current);
+    }
+
+    descriptionFocusTimeoutRef.current = setTimeout(() => {
+      scrollViewRef.current?.scrollTo({
+        y: Math.max(0, descriptionSectionY - 24),
+        animated: true,
+      });
+    }, 180);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (descriptionFocusTimeoutRef.current) {
+        clearTimeout(descriptionFocusTimeoutRef.current);
+      }
+    };
+  }, []);
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <View className="border-b border-border bg-surface px-5 py-4">
@@ -220,12 +253,18 @@ const CustomerSupplierScreen = () => {
 
       <KeyboardAvoidingView
         className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        behavior={Platform.select({ ios: "padding", android: "height" })}
+        keyboardVerticalOffset={Platform.OS === "ios" ? insets.top : 24}
       >
         <ScrollView
+          ref={scrollViewRef}
           className="flex-1"
           keyboardShouldPersistTaps="handled"
           contentContainerClassName="px-5 pt-5 pb-8"
+          contentContainerStyle={{
+            paddingBottom: Math.max(insets.bottom, 12) + 96,
+          }}
+          keyboardDismissMode="on-drag"
         >
           <View className="flex-row items-center">
             <Pressable
@@ -343,7 +382,7 @@ const CustomerSupplierScreen = () => {
               value={name}
               onChangeText={setName}
               placeholder="নাম"
-              placeholderTextColor={palette.foreground}
+              placeholderTextColor={palette.foregroundMuted}
               returnKeyType="next"
               className="ml-3 flex-1 text-base text-foreground"
             />
@@ -359,7 +398,7 @@ const CustomerSupplierScreen = () => {
               value={phone}
               onChangeText={handlePhoneChange}
               placeholder="মোবাইল নম্বর"
-              placeholderTextColor={palette.foreground}
+              placeholderTextColor={palette.foregroundMuted}
               keyboardType="phone-pad"
               returnKeyType="done"
               maxLength={16}
@@ -370,6 +409,12 @@ const CustomerSupplierScreen = () => {
           <Text className="mt-2 text-right text-xs text-foreground-muted">
             ১১ সংখ্যার মোবাইল নম্বর দিন
           </Text>
+
+          {showInvalidPhoneHint ? (
+            <Text className="mt-1 text-right text-xs text-primary">
+              সঠিক নম্বর দিন (উদাহরণ: 01XXXXXXXXX)
+            </Text>
+          ) : null}
 
           <View className="mt-4 h-16 flex-row items-center rounded-2xl border border-border bg-surface px-4">
             <Ionicons
@@ -383,7 +428,7 @@ const CustomerSupplierScreen = () => {
                 handleAmountChange(value, setTotalPayable)
               }
               placeholder="মোট আমাকে দিতে হবে"
-              placeholderTextColor={palette.foreground}
+              placeholderTextColor={palette.foregroundMuted}
               keyboardType="decimal-pad"
               className="ml-3 flex-1 text-base text-foreground"
             />
@@ -401,7 +446,7 @@ const CustomerSupplierScreen = () => {
                 handleAmountChange(value, setTotalReceivable)
               }
               placeholder="মোট সে আমাকে দিবে"
-              placeholderTextColor={palette.foreground}
+              placeholderTextColor={palette.foregroundMuted}
               keyboardType="decimal-pad"
               className="ml-3 flex-1 text-base text-foreground"
             />
@@ -421,7 +466,12 @@ const CustomerSupplierScreen = () => {
             </Text>
           </Pressable>
 
-          <View className="mt-4 rounded-2xl border border-border bg-surface px-4 py-4">
+          <View
+            className="mt-4 rounded-2xl border border-border bg-surface px-4 py-4"
+            onLayout={(event) => {
+              setDescriptionSectionY(event.nativeEvent.layout.y);
+            }}
+          >
             <View className="flex-row">
               <Ionicons
                 name="document-text-outline"
@@ -432,10 +482,12 @@ const CustomerSupplierScreen = () => {
                 value={description}
                 onChangeText={setDescription}
                 placeholder="বিবরণ"
-                placeholderTextColor={palette.foreground}
+                placeholderTextColor={palette.foregroundMuted}
                 multiline
                 numberOfLines={4}
                 textAlignVertical="top"
+                scrollEnabled={true}
+                onFocus={handleDescriptionFocus}
                 className="ml-3 min-h-24 flex-1 text-base text-foreground"
               />
             </View>
@@ -457,7 +509,10 @@ const CustomerSupplierScreen = () => {
           />
         ) : null}
 
-        <View className="px-5 pb-6">
+        <View
+          className="px-5"
+          style={{ paddingBottom: Math.max(insets.bottom, 12) }}
+        >
           <Pressable
             onPress={handleSubmit}
             disabled={isSubmitDisabled}

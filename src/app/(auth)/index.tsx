@@ -46,11 +46,7 @@ const AuthScreen = () => {
       {/* gradient background */}
       <View className="absolute inset-0">
         <LinearGradient
-          colors={[
-            palette.background,
-            `${palette.surface}F0`,
-            palette.background,
-          ]}
+          colors={[palette.background, "#EEF4FF", palette.background]}
           locations={[0, 0.5, 1]}
           style={{ width: "100%", height: "100%" }}
           start={{ x: 0.5, y: 0 }}
@@ -76,7 +72,7 @@ const AuthScreen = () => {
           </View>
 
           <View className="items-center px-6 mt-4">
-            <Ionicons name="book" size={100} color={palette.primaryLight} />
+            <Ionicons name="book" size={100} color={palette.primary} />
           </View>
 
           {/* feature chips (Tally-Khata) */}
@@ -110,11 +106,7 @@ const AuthScreen = () => {
                 onPress={() => {}}
                 className="flex-row items-center gap-2 px-3.5 py-2 rounded-full border border-border bg-surface/85"
               >
-                <Ionicons
-                  name={chip.icon}
-                  size={16}
-                  color={palette.secondary}
-                />
+                <Ionicons name={chip.icon} size={16} color={palette.primary} />
                 <Text className="text-foreground-muted text-xs font-semibold tracking-wide">
                   {chip.label}
                 </Text>
