@@ -1,12 +1,26 @@
 import { palette } from "@/theme/palette";
 import { Ionicons } from "@expo/vector-icons";
+import DateTimePicker, {
+  DateTimePickerEvent,
+} from "@react-native-community/datetimepicker";
+import { Image } from "expo-image";
+import * as ImagePicker from "expo-image-picker";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useMemo, useState } from "react";
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import {
+  Alert,
+  Platform,
+  Pressable,
+  ScrollView,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import useCashbook, { CashbookKind } from "./hooks/useCashbook";
 
 const keypadRows = [
   ["AC", "%", "÷", "×"],
@@ -26,6 +40,7 @@ const operatorMap: Record<string, string> = {
 export default function CashbookForm() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
+  const { createEntry, loading } = useCashbook();
   const params = useLocalSearchParams<{
     title?: string;
     trend?: "in" | "out";
@@ -34,6 +49,9 @@ export default function CashbookForm() {
 
   const [expression, setExpression] = useState("");
   const [note, setNote] = useState("");
+  const [entryDate, setEntryDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
   const transactionTitle =
     typeof params.title === "string" && params.title.trim().length > 0
@@ -56,10 +74,36 @@ export default function CashbookForm() {
 
   const amountText = expression || "0";
 
+  const todayText = useMemo(() => {
+    return new Intl.DateTimeFormat("bn-BD", {
+      day: "2-digit",
+      month: "long",
+      year: "2-digit",
+    }).format(entryDate);
+  }, [entryDate]);
+
   const isConfirmDisabled = useMemo(() => {
     const value = Number.parseFloat(expression || "0");
     return !Number.isFinite(value) || value <= 0;
   }, [expression]);
+
+  const kindFromTitle = useMemo<Record<string, CashbookKind>>(
+    () => ({
+      "ক্যাশ বেচা": "cash_sale",
+      "ক্যাশ কেনা": "cash_buy",
+      খরচ: "expense",
+      "মালিক দিল": "owner_gave",
+      "মালিক নিল": "owner_took",
+    }),
+    [],
+  );
+
+  const isoEntryDate = useMemo(() => {
+    const year = entryDate.getFullYear();
+    const month = String(entryDate.getMonth() + 1).padStart(2, "0");
+    const day = String(entryDate.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }, [entryDate]);
 
   const evaluateExpression = (value: string) => {
     const normalized = value
@@ -123,6 +167,80 @@ export default function CashbookForm() {
     }
 
     setExpression((previous) => `${previous}${key}`);
+  };
+
+  const handleConfirm = async () => {
+    try {
+      const rawAmount = Number.parseFloat(
+        evaluateExpression(expression || "0"),
+      );
+
+      if (!Number.isFinite(rawAmount) || rawAmount <= 0) {
+        Alert.alert("ভুল ইনপুট", "সঠিক পরিমাণ দিন");
+        return;
+      }
+
+      const kind =
+        kindFromTitle[transactionTitle] ??
+        (transactionTrend === "in" ? "cash_sale" : "cash_buy");
+
+      await createEntry({
+        kind,
+        direction: transactionTrend,
+        title: transactionTitle,
+        amount: rawAmount,
+        note,
+        imageUrl: imageUri,
+        entryDate: isoEntryDate,
+      });
+
+      router.back();
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "লেনদেন সেভ করা যায়নি";
+      Alert.alert("সেভ ব্যর্থ", message);
+    }
+  };
+
+  const handleDateChange = (
+    event: DateTimePickerEvent,
+    selectedDate?: Date,
+  ) => {
+    if (Platform.OS !== "ios") {
+      setShowDatePicker(false);
+    }
+
+    if (event.type === "dismissed" || !selectedDate) {
+      return;
+    }
+
+    setEntryDate(selectedDate);
+  };
+
+  const handlePickImage = async () => {
+    try {
+      const permission =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+      if (!permission.granted) {
+        Alert.alert("অনুমতি প্রয়োজন", "ছবি বাছাই করতে গ্যালারি অনুমতি দিন");
+        return;
+      }
+
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ["images"],
+        allowsEditing: true,
+        quality: 0.8,
+      });
+
+      if (result.canceled || !result.assets?.length) {
+        return;
+      }
+
+      setImageUri(result.assets[0].uri ?? null);
+    } catch {
+      Alert.alert("ব্যর্থ", "ছবি নির্বাচন করা যায়নি");
+    }
   };
 
   return (
@@ -198,48 +316,76 @@ export default function CashbookForm() {
         </View>
 
         <View className="mt-4 flex-row items-center justify-between">
-          <Pressable className="h-12 flex-row items-center rounded-full border border-border bg-surface px-4 active:opacity-90">
+          <Pressable
+            onPress={() => setShowDatePicker(true)}
+            className="h-12 flex-row items-center rounded-full border border-border bg-surface px-4 active:opacity-90"
+          >
             <Ionicons
               name="calendar-outline"
               size={20}
               color={palette.foregroundMuted}
             />
             <Text className="ml-2 text-sm font-medium text-foreground-muted">
-              ০৫ মার্চ, ২৬
+              {todayText}
             </Text>
           </Pressable>
 
-          <Pressable className="h-12 flex-row items-center rounded-full border border-border bg-surface px-4 active:opacity-90">
+          <Pressable
+            onPress={handlePickImage}
+            className="h-12 flex-row items-center rounded-full border border-border bg-surface px-4 active:opacity-90"
+          >
             <Ionicons
               name="camera-outline"
               size={20}
               color={palette.foregroundMuted}
             />
             <Text className="ml-2 text-sm font-medium text-foreground-muted">
-              ছবি
+              {imageUri ? "ছবি বদলান" : "ছবি"}
             </Text>
           </Pressable>
         </View>
+
+        {imageUri ? (
+          <View className="mt-4 overflow-hidden rounded-2xl border border-border bg-surface">
+            <Image
+              source={{ uri: imageUri }}
+              contentFit="cover"
+              style={{ width: "100%", height: 180 }}
+            />
+          </View>
+        ) : null}
       </ScrollView>
+
+      {showDatePicker ? (
+        <DateTimePicker
+          value={entryDate}
+          mode="date"
+          display={Platform.OS === "ios" ? "spinner" : "default"}
+          onChange={handleDateChange}
+        />
+      ) : null}
 
       <View
         className="border-t border-border bg-surface px-4 pt-3"
         style={{ paddingBottom: Math.max(insets.bottom, 8) }}
       >
         <Pressable
-          disabled={isConfirmDisabled}
+          disabled={isConfirmDisabled || loading}
+          onPress={handleConfirm}
           className={
             "mb-3 h-12 items-center justify-center rounded-full " +
-            (isConfirmDisabled ? "bg-primary/20" : "bg-primary")
+            (isConfirmDisabled || loading ? "bg-primary/20" : "bg-primary")
           }
         >
           <Text
             className={
               "text-lg font-semibold " +
-              (isConfirmDisabled ? "text-foreground-subtle" : "text-background")
+              (isConfirmDisabled || loading
+                ? "text-foreground-subtle"
+                : "text-background")
             }
           >
-            নিশ্চিত
+            {loading ? "সেভ হচ্ছে..." : "নিশ্চিত"}
           </Text>
         </Pressable>
 

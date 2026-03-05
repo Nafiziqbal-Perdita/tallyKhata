@@ -73,6 +73,12 @@ type DeleteCustomerSupplierInput = {
   id: string;
 };
 
+export type SupabaseBusinessContext = {
+  userId: string;
+  businessId: string;
+  supabase: ReturnType<typeof createSupabaseClient>;
+};
+
 export type Stock = {
   id: string;
   user_id: string;
@@ -224,6 +230,25 @@ const useSupabase = () => {
       return null;
     }
   }, [isLoaded, isSignedIn, userId]);
+
+  const getSupabaseContext =
+    useCallback(async (): Promise<SupabaseBusinessContext> => {
+      if (!isLoaded || !isSignedIn || !userId) {
+        throw new Error("Authentication is not ready");
+      }
+
+      const business = await getOrCreateBusiness();
+
+      if (!business?.id) {
+        throw new Error("Business not found for this user");
+      }
+
+      return {
+        userId,
+        businessId: business.id,
+        supabase: createSupabaseClient(),
+      };
+    }, [getOrCreateBusiness, isLoaded, isSignedIn, userId]);
 
   const createStock = useCallback(
     async ({ name, unit, costPerUnit, openingStock = 0 }: CreateStockInput) => {
@@ -708,6 +733,8 @@ const useSupabase = () => {
       loading,
       setLoading,
       setBusiness,
+      getBusiness,
+      getSupabaseContext,
       createStock,
       getStocks,
       updateStock,
@@ -719,6 +746,8 @@ const useSupabase = () => {
     [
       loading,
       setBusiness,
+      getBusiness,
+      getSupabaseContext,
       createStock,
       getStocks,
       updateStock,

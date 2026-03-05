@@ -1,18 +1,29 @@
 import { palette } from "@/theme/palette";
 import { useUser } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { FlatList, Pressable, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import useCashbook from "../hooks/useCashbook";
 
 const Cashbook = () => {
   const { user } = useUser();
   const router = useRouter();
   const navigation = useNavigation();
-  const currentCash = 6000;
+  const { getKindTotals, getOverview, loading } = useCashbook();
+  const [currentCash, setCurrentCash] = useState(0);
+  const [todayIn, setTodayIn] = useState(0);
+  const [todayOut, setTodayOut] = useState(0);
+  const [kindTotals, setKindTotals] = useState({
+    cash_sale: 0,
+    cash_buy: 0,
+    expense: 0,
+    owner_gave: 0,
+    owner_took: 0,
+  });
 
   const formatBnAmount = (value: number) => {
     return new Intl.NumberFormat("bn-BD", {
@@ -38,53 +49,69 @@ const Cashbook = () => {
     }
   };
 
-  const quickActions = [
-    { key: "report", icon: "document-text-outline", label: "রিপোর্ট" },
-    {
-      key: "transfer",
-      icon: "swap-horizontal-outline",
-      label: "ক্যাশবইর মিলাও",
-    },
-    { key: "view", icon: "eye-outline", label: "দেখুন" },
-  ] as const;
+  const loadCashbookData = useCallback(async () => {
+    try {
+      const [overview, totals] = await Promise.all([
+        getOverview(),
+        getKindTotals(),
+      ]);
 
-  const flowItems = [
-    {
-      key: "cash-sale",
-      icon: "trending-down-outline",
-      label: "ক্যাশ বেচা",
-      amount: "0.00",
-      trend: "in",
-    },
-    {
-      key: "cash-buy",
-      icon: "trending-up-outline",
-      label: "ক্যাশ কেনা",
-      amount: "0.00",
-      trend: "out",
-    },
-    {
-      key: "expense",
-      icon: "receipt-outline",
-      label: "খরচ",
-      amount: "0.00",
-      trend: "out",
-    },
-    {
-      key: "owner-gave",
-      icon: "wallet-outline",
-      label: "মালিক দিল",
-      amount: "0.00",
-      trend: "in",
-    },
-    {
-      key: "owner-took",
-      icon: "cash-outline",
-      label: "মালিক নিল",
-      amount: "0.00",
-      trend: "out",
-    },
-  ] as const;
+      setCurrentCash(overview.currentCash);
+      setTodayIn(overview.todayIn);
+      setTodayOut(overview.todayOut);
+      setKindTotals(totals);
+    } catch (error) {
+      console.log("Error loading cashbook data:", error);
+    }
+  }, [getKindTotals, getOverview]);
+
+  useFocusEffect(
+    useCallback(() => {
+      void loadCashbookData();
+    }, [loadCashbookData]),
+  );
+
+  const flowItems = useMemo(
+    () =>
+      [
+        {
+          key: "cash-sale",
+          icon: "trending-down-outline",
+          label: "ক্যাশ বেচা",
+          amount: formatBnAmount(kindTotals.cash_sale),
+          trend: "in",
+        },
+        {
+          key: "cash-buy",
+          icon: "trending-up-outline",
+          label: "ক্যাশ কেনা",
+          amount: formatBnAmount(kindTotals.cash_buy),
+          trend: "out",
+        },
+        {
+          key: "expense",
+          icon: "receipt-outline",
+          label: "খরচ",
+          amount: formatBnAmount(kindTotals.expense),
+          trend: "out",
+        },
+        {
+          key: "owner-gave",
+          icon: "wallet-outline",
+          label: "মালিক দিল",
+          amount: formatBnAmount(kindTotals.owner_gave),
+          trend: "in",
+        },
+        {
+          key: "owner-took",
+          icon: "cash-outline",
+          label: "মালিক নিল",
+          amount: formatBnAmount(kindTotals.owner_took),
+          trend: "out",
+        },
+      ] as const,
+    [kindTotals],
+  );
 
   return (
     <SafeAreaView className="flex-1 bg-background">
@@ -147,7 +174,11 @@ const Cashbook = () => {
             <View className="mt-4 rounded-3xl border border-border bg-surface px-4 py-4">
               <View className="flex-row">
                 <View className="flex-1 items-center">
-                  <Text className="text-foreground text-2xl font-bold">০</Text>
+                  <Text className="text-foreground text-2xl font-bold">
+                    {new Intl.NumberFormat("bn-BD", {
+                      maximumFractionDigits: 0,
+                    }).format(todayIn)}
+                  </Text>
                   <Text className="mt-1 text-xs text-foreground-muted">
                     আজকের বেচা
                   </Text>
@@ -170,14 +201,24 @@ const Cashbook = () => {
                   <View className="flex-1 items-center">
                     <Text className="text-sm text-foreground">
                       আজ পেলাম{" "}
-                      <Text className="text-secondary font-semibold">০</Text>
+                      <Text className="text-secondary font-semibold">
+                        {new Intl.NumberFormat("bn-BD", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(todayIn)}
+                      </Text>
                     </Text>
                   </View>
                   <View className="w-px bg-border" />
                   <View className="flex-1 items-center">
                     <Text className="text-sm text-foreground">
                       আজ দিলাম{" "}
-                      <Text className="text-primary font-semibold">০</Text>
+                      <Text className="text-primary font-semibold">
+                        {new Intl.NumberFormat("bn-BD", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(todayOut)}
+                      </Text>
                     </Text>
                   </View>
                 </View>
@@ -185,15 +226,13 @@ const Cashbook = () => {
             </View>
 
             <View className="mt-4 rounded-3xl border border-border bg-surface px-3 py-3">
-             
-
               <View className="mt-4 flex-row">
                 <View className="flex-1">
                   <Text className="text-base font-semibold text-foreground">
                     বাকি আদায়
                   </Text>
                   <Text className="mt-1 text-secondary font-semibold">
-                    ৳ {formatBnAmount(0)}
+                    ৳ {formatBnAmount(kindTotals.cash_sale)}
                   </Text>
                 </View>
                 <View className="items-end">
@@ -201,7 +240,7 @@ const Cashbook = () => {
                     পেমেন্ট দেয়া
                   </Text>
                   <Text className="mt-1 text-primary font-semibold">
-                    ৳ {formatBnAmount(0)}
+                    ৳ {formatBnAmount(kindTotals.cash_buy)}
                   </Text>
                 </View>
               </View>
@@ -244,13 +283,17 @@ const Cashbook = () => {
                 {item.label}
               </Text>
 
+              <Text className="mr-1 text-xs text-foreground-muted">
+                {loading ? "লোডিং..." : "৳"}
+              </Text>
+
               <Text
                 className={
                   "mr-3 text-xl font-semibold " +
                   (item.trend === "in" ? "text-secondary" : "text-primary")
                 }
               >
-                {item.amount}
+                {loading ? "..." : item.amount}
               </Text>
 
               <Ionicons
