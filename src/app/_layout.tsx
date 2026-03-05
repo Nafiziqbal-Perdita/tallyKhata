@@ -32,6 +32,7 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="stock" />
+          <Stack.Screen name="cashbook-form" />
           <Stack.Screen name="customer_supplier" />
           <Stack.Screen name="sso-callback" />
           <Stack.Screen name="+not-found" />
